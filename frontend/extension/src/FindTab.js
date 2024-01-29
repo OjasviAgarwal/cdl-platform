@@ -46,9 +46,6 @@ export default function FindTab() {
   const onQG = async () => {
     onGenerate("gen_questions")
   }
-  const onS = async () => {
-    onGenerate("summarize")
-  }
   
 
   const onAskWeb = async (question) => {
@@ -59,7 +56,7 @@ export default function FindTab() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ 
-        "context": "",
+        "context": highlightedText,
         "query": question,
         "mode": "web",
         "url": url
@@ -79,7 +76,7 @@ export default function FindTab() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ 
-        "context": "",
+        "context": highlightedText,
         "query": question,
         "mode": "qa",
         "url": url
@@ -94,7 +91,7 @@ export default function FindTab() {
   
 
 
-  const onGenerate = async (mode) => {
+  const onGenerate = async (mode, ht) => {
     setGenerationSpinner(true)
     if (mode == "qa" || mode == "contextual_qa") {
       if (text === undefined || text.length == 0) {
@@ -107,6 +104,13 @@ export default function FindTab() {
     
     //        "comparison": comparisonResults,
 
+    var context = ""
+    if (ht === null || ht === undefined){
+      context = highlightedText
+    } else {
+      context = ht
+    }
+
     let res = await fetch(baseURL + "generate", {
       method: "POST",
       headers: {
@@ -114,7 +118,7 @@ export default function FindTab() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ 
-        "context": highlightedText,
+        "context": context,
         "query": text,
         "mode": mode,
         "url": url
@@ -143,10 +147,10 @@ export default function FindTab() {
                               );
     } else {
       output = <p>{response.output}</p>
+      getComparison(url, response.output)
     }
     setGenerationSpinner(false)
     setGenerationResults(output)
-    getComparison(url, response.output)
   };
 
 
@@ -242,6 +246,7 @@ export default function FindTab() {
             setHighlightedText(result[0].result);
             setUrl(url);
             getComparison(url, result[0].result);
+            onGenerate("gen_questions", result[0].result)
           }
         });
       });
@@ -376,8 +381,8 @@ export default function FindTab() {
               <Button variant="contained" style={{padding: 14, width: "22%", marginRight: "5px"}} onClick={onQG}>
                   Generate Questions
               </Button>
-              <Button variant="contained" style={{padding: 14, width: "22%", marginRight: "5px"}} onClick={onS}>
-                  Summarize Selection
+              <Button variant="contained" style={{padding: 14, width: "22%", marginRight: "5px"}} onClick={() => onAskWeb(text)}>
+                  Ask the Web
               </Button>
             </div>
         )}
