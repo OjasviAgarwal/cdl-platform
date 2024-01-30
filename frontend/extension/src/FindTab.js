@@ -168,7 +168,7 @@ export default function FindTab() {
   };
 
   let getComparison = async (current_url, current_ht) => {
-    setComparisonSpinner(true);
+    //setComparisonSpinner(true);
     try {
 
       let res = await fetch(baseURL + "compare", {
@@ -468,7 +468,6 @@ export default function FindTab() {
 
           </Box>
         )}
-        {!isUserQueried && !comparisonSpinner && !comparisonResults && <p>No results found.</p>}
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
       <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
         {message}
