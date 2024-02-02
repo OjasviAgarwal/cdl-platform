@@ -14,7 +14,7 @@ let show_relevant = true;
 
 export default function FindTab() {
   const [comparisonResults, setComparisonResults] = React.useState(false);
-  
+
 
   const [comparisonSpinner, setComparisonSpinner] = React.useState(false);
   const [generationSpinner, setGenerationSpinner] = React.useState(false);
@@ -46,7 +46,7 @@ export default function FindTab() {
   const onQG = async () => {
     onGenerate("gen_questions")
   }
-  
+
 
   const onAskWeb = async (question) => {
     let res = await fetch(baseURL + "generate", {
@@ -55,7 +55,7 @@ export default function FindTab() {
         Authorization: localStorage.getItem("authToken"),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         "context": highlightedText,
         "query": question,
         "mode": "web",
@@ -75,7 +75,7 @@ export default function FindTab() {
         Authorization: localStorage.getItem("authToken"),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         "context": highlightedText,
         "query": question,
         "mode": "qa",
@@ -88,7 +88,7 @@ export default function FindTab() {
     setGenerationResults(output)
     getComparison(url, response.output)
   }
-  
+
 
 
   const onGenerate = async (mode, ht) => {
@@ -101,11 +101,11 @@ export default function FindTab() {
         return;
       }
     }
-    
+
     //        "comparison": comparisonResults,
 
     var context = ""
-    if (ht === null || ht === undefined){
+    if (ht === null || ht === undefined) {
       context = highlightedText
     } else {
       context = ht
@@ -117,7 +117,7 @@ export default function FindTab() {
         Authorization: localStorage.getItem("authToken"),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         "context": context,
         "query": text,
         "mode": mode,
@@ -129,7 +129,7 @@ export default function FindTab() {
 
     var output = ""
 
-    if(mode == "contextual_qa" || mode == "gen_questions"){
+    if (mode == "contextual_qa" || mode == "gen_questions") {
       let resultArray = response.output.split('\n');
       output = resultArray.map((item, index) => <div>
                                                   <p key={index}>
@@ -145,6 +145,7 @@ export default function FindTab() {
                                                   </div>
                                                 </div>
                               );
+
     } else {
       output = <p>{response.output}</p>
       getComparison(url, response.output)
@@ -177,12 +178,12 @@ export default function FindTab() {
           Authorization: localStorage.getItem("authToken"),
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          "url": current_url, 
-          "highlighted_text": current_ht 
+        body: JSON.stringify({
+          "url": current_url,
+          "highlighted_text": current_ht
         }),
       });
-  
+
       let response = await res.json();
 
       setComparisonResults(response.analyzed_ht);
@@ -192,7 +193,7 @@ export default function FindTab() {
       console.log(error);
     }
   };
-  
+
   let getQueryText = () => {
     // This function concatenates and returns highlighted text with website description and title.
     let query = "";
@@ -201,19 +202,19 @@ export default function FindTab() {
     let selection = getSelection().toString();
     if (selection !== undefined) {
       query += selection;
-      if(query){
+      if (query) {
         return query
       }
     }
 
     // Description
     let metas = document.getElementsByTagName('meta');
-      for(let i in metas) {
-        if (typeof(metas[i].name) != 'undefined' && metas[i].name.toLowerCase().includes("description")) {
-          query += " " + metas[i].content;
-          break;
-        }   
+    for (let i in metas) {
+      if (typeof (metas[i].name) != 'undefined' && metas[i].name.toLowerCase().includes("description")) {
+        query += " " + metas[i].content;
+        break;
       }
+    }
     // Title
     query += " " + document.querySelector('title').innerHTML;
 
@@ -249,7 +250,7 @@ export default function FindTab() {
             onGenerate("gen_questions", result[0].result)
           }
         });
-      });
+    });
   };
 
   let search = async (query) => {
@@ -299,18 +300,18 @@ export default function FindTab() {
       });
 
       let response = await config.json();
-      if(response.status === "ok"){
+      if (response.status === "ok") {
         setAllCommunities(response.community_info);
-      }else{
+      } else {
         setSeverity("error")
         setMessage(response.message);
         handleClick();
       }
     } catch (error) {
-        setSeverity("error");
-        setMessage("Unable to fetch your communities, Please try again.");
-        handleClick();    
-      }
+      setSeverity("error");
+      setMessage("Unable to fetch your communities, Please try again.");
+      handleClick();
+    }
   };
 
   useEffect(() => {
@@ -354,7 +355,7 @@ export default function FindTab() {
                   result_hash={d.result_hash}
                   highlighted_text={d.highlighted_text}
                   explanation={d.explanation}
-                  hashtags = {d.hashtags}
+                  hashtags={d.hashtags}
                   communities_part_of={d.communities_part_of}
                   auth_token={localStorage.getItem("authToken")}
                   show_relevant={show_relevant}
@@ -364,47 +365,47 @@ export default function FindTab() {
         </Box>
       )}
 
-        {!isUserQueried && highlightedText && (
-                <div style={{ textAlign: "left", width: "90%" }}>
-                  <p>{highlightedText.substring(0,100)}...</p>
-                </div>
-        )}
+      {!isUserQueried && highlightedText && (
+        <div style={{ textAlign: "left", width: "90%" }}>
+          <p>{highlightedText.substring(0, 100)}...</p>
+        </div>
+      )}
 
-        {!isUserQueried && comparisonResults && (
-            <div>
-              <Button variant="contained" style={{padding: 14, width: "22%", marginRight: "5px"}} onClick={onQA}>
-                  Ask a Question
-              </Button>
-              <Button variant="contained" style={{padding: 14, width: "22%", marginRight: "5px"}} onClick={onCQA}>
-                  Ask in Context
-              </Button>
-              <Button variant="contained" style={{padding: 14, width: "22%", marginRight: "5px"}} onClick={onQG}>
-                  Generate Questions
-              </Button>
-              <Button variant="contained" style={{padding: 14, width: "22%", marginRight: "5px"}} onClick={() => onAskWeb(text)}>
-                  Ask the Web
-              </Button>
-            </div>
-        )}
+      {!isUserQueried && comparisonResults && (
+        <div>
+          <Button variant="contained" style={{ padding: 14, width: "22%", marginRight: "5px" }} onClick={onQA}>
+            Ask a Question
+          </Button>
+          <Button variant="contained" style={{ padding: 14, width: "22%", marginRight: "5px" }} onClick={onCQA}>
+            Ask in Context
+          </Button>
+          <Button variant="contained" style={{ padding: 14, width: "22%", marginRight: "5px" }} onClick={onQG}>
+            Generate Questions
+          </Button>
+          <Button variant="contained" style={{ padding: 14, width: "22%", marginRight: "5px" }} onClick={() => onAskWeb(text)}>
+            Ask the Web
+          </Button>
+        </div>
+      )}
 
 
-        {!isUserQueried && !generationSpinner && generationResults && (
-            <div style={{ textAlign: "left", width: "90%" }}>
-              {generationResults}
-            </div>
-        )}
+      {!isUserQueried && !generationSpinner && generationResults && (
+        <div style={{ textAlign: "left", width: "90%" }}>
+          {generationResults}
+        </div>
+      )}
 
-        {!isUserQueried && generationSpinner && (
-          <CircularProgress style={{ marginTop: "70px" }} color="success" />
-        )}
+      {!isUserQueried && generationSpinner && (
+        <CircularProgress style={{ marginTop: "70px" }} color="success" />
+      )}
 
-        {!isUserQueried && comparisonSpinner && (
-          <CircularProgress style={{ marginTop: "70px" }} color="success" />
-        )}
-        {!isUserQueried && !comparisonSpinner && comparisonResults && (
-          
-          <Box style={{ bgcolor: "background.paper" }}>
-            <div>
+      {!isUserQueried && comparisonSpinner && (
+        <CircularProgress style={{ marginTop: "70px" }} color="success" />
+      )}
+      {!isUserQueried && !comparisonSpinner && comparisonResults && (
+
+        <Box style={{ bgcolor: "background.paper" }}>
+          <div>
             {comparisonResults.submitted_you.results.length !== 0 && (<div><h4>Saved by You</h4><p>Keywords: {comparisonResults.submitted_you.keywords}</p></div>)}
             {comparisonResults.submitted_you.results.length !== 0 && (
               comparisonResults.submitted_you.results.map((d, idx) => (
@@ -464,17 +465,16 @@ export default function FindTab() {
                   />
                 </div>
               )))}
-            </div>
+          </div>
 
-          </Box>
-        )}
+        </Box>
+      )}
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-      <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
-        {message}
-      </Alert>
-    </Snackbar>
+        <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
+          {message}
+        </Alert>
+      </Snackbar>
 
     </div>
   );
 }
-  
