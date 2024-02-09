@@ -20,6 +20,7 @@ export default function SubmissionDetails(subData) {
         submissionIsAnonymous,
         submissionMode,
         originalDescription,
+        originalTitle,
         submissionType,
         submissionId,
         submissionIncomingConnections,
@@ -393,7 +394,13 @@ export default function SubmissionDetails(subData) {
 
         if (submissionMode === "edit") {
             let temp = originalDescription
-            setSubmissionProps({ submissionDescription: temp })
+            if (originalDescription) {
+                setSubmissionProps({ submissionDescription: temp })
+            }
+            let tempTitle = originalTitle
+            if (originalTitle) {
+                setSubmissionProps({ submissionTitle: tempTitle })
+            }
             setSubmissionProps({ ...submissionMode, submissionMode: "view" });
         } else {
             setSubmissionProps({ ...submissionMode, submissionMode: "edit" });
@@ -402,8 +409,8 @@ export default function SubmissionDetails(subData) {
 
     const submitSubmissionChanges = () => {
 
-        // let tempTitle = submissionTitle
-        // setSubmissionProps({ originalTitle: tempTitle })
+        let tempTitle = submissionTitle
+        setSubmissionProps({ originalTitle: tempTitle })
 
         let tempDesc = submissionDescription
         setSubmissionProps({ originalDescription: tempDesc })
@@ -470,7 +477,8 @@ export default function SubmissionDetails(subData) {
                                         maxWidth: '95ch',
                                     }}>
                                     <Link target="_blank" color="inherit" href={submissionData.submission.redirect_url}>
-                                        {submissionTitle}
+                                        {/* {submissionTitle} */}
+                                        {originalTitle ? originalTitle : submissionTitle}
                                     </Link>
 
                                 </Typography>
