@@ -282,7 +282,6 @@ export async function getServerSideProps(context) {
     });
 
     var communityURL = baseURL_server + getCommunitiesEndpoint;
-    console.log(communityURL);
     const fetchCommunities = await fetch(communityURL, {
       headers: new Headers({
         Authorization: context.req.cookies.token,
