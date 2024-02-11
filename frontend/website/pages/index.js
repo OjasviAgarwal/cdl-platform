@@ -20,8 +20,9 @@ import Setup from "./setup";
 const baseURL_server = process.env.NEXT_PUBLIC_FROM_SERVER + "api/";
 const baseURL_client = process.env.NEXT_PUBLIC_FROM_CLIENT + "api/";
 const recommendationsEndPoint = "recommend";
+const getCommunitiesEndpoint = "getCommunities";
 
-function Home({ data }) {
+function Home({ data, community_joined_data }) {
 
   const router = useRouter();
   const [items, setItems] = useState(data.recommendation_results_page);
@@ -280,6 +281,14 @@ export async function getServerSideProps(context) {
       }),
     });
 
+    var communityURL = baseURL_server + getCommunitiesEndpoint;
+    console.log(communityURL);
+    const fetchCommunities = await fetch(communityURL, {
+      headers: new Headers({
+        Authorization: context.req.cookies.token,
+      }),
+    });
+
     const data = await res.json();
     if (res.status == 200) {
       // Pass data to the page via props
@@ -298,6 +307,16 @@ export async function getServerSideProps(context) {
       };
     } else {
       return { props: { error: "error" } };
+    }
+
+    const community_joined_data = await fetchCommunities.json();
+    console.log(community_joined_data);
+    if (fetchCommunities.status == 200) {
+      // Pass data to the page via props
+      if(community_joined_data.length() > 0){
+        return { props: { community_joined_data } };
+      }
+      //return communitiesJoined(community_joined_data);
     }
   }
 }
