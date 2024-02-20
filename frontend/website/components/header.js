@@ -183,7 +183,6 @@ function Header(props) {
   const handleSelectCommunity = async (event) => {
     setCommunity(event.target.value);
     setSelectedCommunity(event.target.value);
-
   };
 
   // Necessary variables and functions for edit
@@ -197,11 +196,11 @@ function Header(props) {
     setOpenSubmission(true);
   };
 
-  const [openNewSubTitleDialog, setOpenNewSubTitleDialog] = useState(false);
+  //const [openNewSubTitleDialog, setOpenNewSubTitleDialog] = useState(false);
 
-  const handleClickOpenNewSubTitleDialog = () => {
-    setOpenNewSubTitleDialog(true);
-  };
+  // const handleClickOpenNewSubTitleDialog = () => {
+  //   setOpenNewSubTitleDialog(true);
+  // };
 
   const handleCancelNewSubTitleDialog = () => {
     setNewSubTitle("")
