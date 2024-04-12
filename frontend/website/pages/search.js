@@ -21,18 +21,21 @@ const baseURL_client = process.env.NEXT_PUBLIC_FROM_CLIENT + "api/";
 const websiteURL = process.env.NEXT_PUBLIC_FROM_CLIENT;
 const searchEndpoint = "search?";
 var searchURL = baseURL_client + searchEndpoint;
+//const generateEndpoint = "generate"
 
 
 // Relevant Flag here for now
 //let show_relevant = true;
 
-function SearchResults({ data, show_relevance_judgment, own_submissions, community }) {
+function SearchResults({ data, show_relevance_judgment, own_submissions, community , search_summary }) {
 
   const [items, setItems] = useState(data.search_results_page);
   const [page, setPage] = useState(parseInt(data.current_page) + 1);
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(Math.ceil(data.total_num_results / 10));
   const [searchedCommunity, setSearchedCommunity] = useState("all")
+  console.log(data)
+  //console.log(search_summary)
 
 
   useEffect(() => {
@@ -42,6 +45,29 @@ function SearchResults({ data, show_relevance_judgment, own_submissions, communi
     setTotalPages(Math.ceil(data.total_num_results / 10));
     setSearchedCommunity(findCommunityName(community))
   }, [data])
+
+  const handleSearchSummary = async () => {
+      const generateURL = baseURL_server + "generate"
+      try {
+        const searchSummary = await fetch(generateURL, {
+          method: "POST",
+          headers: {
+            Authorization: jsCookie.get("token"),
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            "mode": "summary_rag",
+            "search_id": data.search_id,
+            "context": "This is context",
+            "query" : "This is query",
+          }),
+        })
+        const search_summary = await searchSummary.json()
+        console.log(search_summary);
+      } catch(error) {
+      console.log(error);
+    }
+  }
 
   const loadMoreResults = async () => {
 
@@ -175,6 +201,24 @@ function SearchResults({ data, show_relevance_judgment, own_submissions, communi
               Export Search Results
             </a>
           </Grid>
+          <Grid item
+            sx={{
+              position: 'absolute',
+              top: 40,
+              right: 5,
+              border: '1px solid #1976d2',
+              padding: '5px 10px',
+              textDecoration: 'none',
+              borderRadius: '5px',
+              display: 'inline-block',
+              margin: '5px',
+              fontSize: '14px',
+              cursor: 'pointer',
+            }}
+            onClick={handleSearchSummary}
+          >
+            Summarize Search Results
+          </Grid>
         </Grid>
 
         <Grid item sx={{ textAlign: 'center' }}>
@@ -300,16 +344,34 @@ export async function getServerSideProps(context) {
       searchURL += "&page=0";
     }
 
+    // var generateURL = baseURL_server + generateEndpoint;
+
     const res = await fetch(searchURL, {
       headers: new Headers({
         Authorization: context.req.cookies.token,
       }),
     });
-
+    // console.log(context.query.search_id)
+    // let searchSummary = await fetch(generateURL, {
+    //   method: "POST",
+    //   headers: {
+    //     Authorization: context.req.cookies.token,
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     "mode": "summary_rag",
+    //     "search_id": 0
+    //   }),
+    // });
+    // console.log(searchSummary)
     const data = await res.json();
+    //const search_summary = await searchSummary.json();
+    //console.log(search_summary)
     const community = context.query.community
+    //console.log(searchSummary.status)
 
     if (res.status == 200) {
+      //if(searchSummary.status == 200) {
       // Pass data to the page via props
       if (context.query.page == undefined) {
         data.current_page = "0";
@@ -317,6 +379,7 @@ export async function getServerSideProps(context) {
         data.current_page = context.query.page;
       }
       return { props: { data, show_relevance_judgment, own_submissions, community } };
+      //}
     } else {
       data.query = "";
       return { props: { data, show_relevance_judgment, own_submissions, community } };
