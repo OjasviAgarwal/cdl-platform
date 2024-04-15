@@ -13,6 +13,7 @@ import Fab from "@mui/material/Fab";
 import Divider from "@mui/material/Divider";
 import Footer from "../components/footer";
 import CommunityDisplay from "../components/communityDisplay";
+import Paper from '@mui/material/Paper';
 
 
 
@@ -219,6 +220,14 @@ function SearchResults({ data, show_relevance_judgment, own_submissions, communi
           >
             Summarize Search Results
           </Grid>
+          <Grid item sx={{ position: 'absolute', top: 90, right: 5 }}>
+          <Paper elevation={2} style={{ alignItems:'right', marginLeft: 'auto', width: '15%', padding: "15px" }}>
+            The notes are about two different topics: golf courses and the Walt Disney World Resort.
+            The golf courses are described as having been built in the 1950s and 1960s and presenting challenges such as sand, water, trees, and green undulations. 
+            The Walt Disney World Resort is an entertainment resort complex in Florida, operated by Disney Experiences and covering nearly 25,000 acres. It contains four theme parks, two water parks, four golf courses, a competitive sports complex, and three shopping, dining, and entertainment areas.
+            Additionally, there are 19 Disney-owned resort hotels and one camping resort on the property, and many other non-Disney-operated resorts on and near the property.
+          </Paper>
+          </Grid>
         </Grid>
 
         <Grid item sx={{ textAlign: 'center' }}>
@@ -232,6 +241,7 @@ function SearchResults({ data, show_relevance_judgment, own_submissions, communi
           display={"flex"}
           justifyContent={"center"}
           alignItems={"center"}>
+          <Paper elevation={2} style={{ marginTop: '10px',  padding: "15px" }}>The notes are about two different topics: golf courses and the Walt Disney World Resort. The golf courses are described as having been built in the 1950s and 1960s and presenting challenges such as sand, water, trees, and green undulations. The Walt Disney World Resort is an entertainment resort complex in Florida, operated by Disney Experiences and covering nearly 25,000 acres. It contains four theme parks, two water parks, four golf courses, a competitive sports complex, and three shopping, dining, and entertainment areas. Additionally, there are 19 Disney-owned resort hotels and one camping resort on the property, and many other non-Disney-operated resorts on and near the property.</Paper>
           <InfiniteScroll
             dataLength={items.length}
             next={loadMoreResults}
