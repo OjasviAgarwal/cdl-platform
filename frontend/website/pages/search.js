@@ -162,7 +162,7 @@ function SearchResults({ data, show_relevance_judgment, own_submissions, communi
   }
 
   return (
-    <div className="allResults">
+    <div className="allResults ml-5">
       <Head>
         <title>{data.query != "" ? data.query : "Search"} - TextData</title>
         <link rel="icon" href="/images/tree32.png" />
@@ -221,7 +221,7 @@ function SearchResults({ data, show_relevance_judgment, own_submissions, communi
             Summarize Search Results
           </Grid>
           <Grid item sx={{ position: 'absolute', top: 90, right: 5 }}>
-          <Paper elevation={2} style={{ alignItems:'right', marginLeft: 'auto', width: '15%', padding: "15px" }}>
+          <Paper style={{ alignItems:'right', border:'1px', marginLeft: 'auto', width: '15%', padding: "15px" }}>
             The notes are about two different topics: golf courses and the Walt Disney World Resort.
             The golf courses are described as having been built in the 1950s and 1960s and presenting challenges such as sand, water, trees, and green undulations. 
             The Walt Disney World Resort is an entertainment resort complex in Florida, operated by Disney Experiences and covering nearly 25,000 acres. It contains four theme parks, two water parks, four golf courses, a competitive sports complex, and three shopping, dining, and entertainment areas.
